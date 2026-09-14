@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Funded Wall</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <p class="wordmark">the funded wall</p>
+  <h1>90% lose money.<br>this wall is for the other 10%.</h1>
+  <p class="sub">pay to cash, cash to enter. a public wall for traders who've actually cashed out.</p>
+  <div class="stats">
+    <span id="occupied-count">—</span>
+    <span class="stats-sep">/</span>
+    <span id="total-count">—</span>
+    <span class="stats-label">spots taken</span>
+    <span class="stats-price">next spot: <strong id="current-price">—</strong></span>
+  </div>
+</header>
+
+<section class="top-spot" id="top-spot">
+  <!-- se rellena por JS -->
+</section>
+
+<section class="wall-wrap">
+  <div class="wall" id="wall">
+    <!-- 500 huecos, generados por JS -->
+  </div>
+</section>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="cerrar">×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer>
+  <p>no audit, just skin in the game. once you're on the wall, you're on it for good.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

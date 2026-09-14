@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claim your spot — The Funded Wall</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .claim-wrap { max-width: 480px; margin: 0 auto; padding: 72px 24px; }
+  .claim-wrap h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0 0 8px; }
+  .claim-wrap p.sub { color: var(--ink-dim); margin: 0 0 32px; }
+  label { display: block; font-size: 13px; color: var(--ink-dim); margin: 18px 0 6px; }
+  input[type="text"], input[type="url"] {
+    width: 100%; padding: 12px; background: var(--bg-raised); border: 1px solid #2A2822;
+    border-radius: 8px; color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14px;
+  }
+  input[type="file"] { margin-top: 6px; color: var(--ink-dim); font-size: 13px; }
+  .submit-btn {
+    margin-top: 28px; width: 100%; padding: 14px; background: var(--gold); color: #1A1913;
+    border: none; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 15px; cursor: pointer;
+  }
+  .submit-btn:disabled { opacity: 0.5; }
+  .msg { margin-top: 16px; font-size: 14px; }
+  .msg.error { color: #E0654A; }
+  .msg.ok { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="claim-wrap">
+  <p class="wordmark">the funded wall</p>
+  <h1 id="title">payment received</h1>
+  <p class="sub" id="subtitle">upload your proof to confirm your spot. you have 48h — after that your spot goes up with just your alias.</p>
+
+  <form id="claim-form">
+    <label for="propFirm">prop firm</label>
+    <input type="text" id="propFirm" name="propFirm" placeholder="e.g. FTMO" maxlength="60">
+
+    <label for="payoutRange">payout range</label>
+    <input type="text" id="payoutRange" name="payoutRange" placeholder="e.g. $5k–10k" maxlength="30">
+
+    <label for="xLink">your X profile (optional)</label>
+    <input type="url" id="xLink" name="xLink" placeholder="https://x.com/yourhandle">
+
+    <label for="screenshot">payout or challenge screenshot</label>
+    <input type="file" id="screenshot" name="screenshot" accept="image/png,image/jpeg,image/webp" required>
+
+    <button type="submit" class="submit-btn" id="submit-btn">confirm my spot</button>
+    <p class="msg" id="msg"></p>
+  </form>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get('session_id');
+const form = document.getElementById('claim-form');
+const msg = document.getElementById('msg');
+
+if (!sessionId) {
+  document.getElementById('title').textContent = 'no session found';
+  document.getElementById('subtitle').textContent = 'this page needs a valid checkout link.';
+  form.style.display = 'none';
+} else {
+  fetch(`/api/claim/${sessionId}`).then(r => r.json()).then(data => {
+    if (!data.found) {
+      document.getElementById('title').textContent = 'session not found';
+      document.getElementById('subtitle').textContent = 'if you just paid, wait a few seconds and refresh.';
+      form.style.display = 'none';
+    } else if (data.submitted) {
+      document.getElementById('title').textContent = "you're all set";
+      document.getElementById('subtitle').textContent = 'your spot is submitted and pending review.';
+      form.style.display = 'none';
+    }
+  });
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'uploading...';
+  msg.textContent = '';
+  msg.className = 'msg';
+
+  const fd = new FormData();
+  fd.append('sessionId', sessionId);
+  fd.append('propFirm', document.getElementById('propFirm').value);
+  fd.append('payoutRange', document.getElementById('payoutRange').value);
+  fd.append('xLink', document.getElementById('xLink').value);
+  fd.append('screenshot', document.getElementById('screenshot').files[0]);
+
+  try {
+    const res = await fetch('/api/claim', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (res.ok) {
+      msg.textContent = 'submitted — pending review, you\'ll be on the wall soon.';
+      msg.className = 'msg ok';
+      form.querySelectorAll('input, button').forEach(el => el.disabled = true);
+    } else {
+      msg.textContent = data.error || 'something went wrong';
+      msg.className = 'msg error';
+      btn.disabled = false;
+      btn.textContent = 'confirm my spot';
+    }
+  } catch (err) {
+    msg.textContent = 'network error, try again';
+    msg.className = 'msg error';
+    btn.disabled = false;
+    btn.textContent = 'confirm my spot';
+  }
+});
+</script>
+</body>
+</html>

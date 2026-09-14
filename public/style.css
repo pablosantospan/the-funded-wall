@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap');
+
+:root {
+  --bg: #0B0B0B;
+  --bg-raised: #161513;
+  --ink: #F2F0EA;
+  --ink-dim: #9C978C;
+  --gold: #EF9F27;
+  --gold-dim: #6B4E1E;
+  --brick: #E9E6DE;
+  --brick-line: #0B0B0B;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.hero {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 24px 40px;
+}
+
+.wordmark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+  margin: 0 0 18px;
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(32px, 6vw, 52px);
+  line-height: 1.08;
+  margin: 0 0 20px;
+}
+
+.hero .sub {
+  font-size: 17px;
+  color: var(--ink-dim);
+  max-width: 46ch;
+  margin: 0 0 28px;
+}
+
+.stats {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  flex-wrap: wrap;
+}
+
+.stats #occupied-count { font-size: 22px; font-weight: 700; color: var(--gold); }
+.stats-sep { color: var(--ink-dim); }
+.stats-label { color: var(--ink-dim); font-family: 'Inter', sans-serif; font-size: 14px; margin-right: 20px; }
+.stats-price { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink-dim); }
+.stats-price strong { color: var(--ink); }
+
+.top-spot {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  padding: 0 24px;
+}
+
+.top-spot-card {
+  background: var(--bg-raised);
+  border: 1px solid var(--gold-dim);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.top-spot-card .label {
+  font-size: 12px;
+  color: var(--gold);
+  margin: 0 0 4px;
+}
+
+.top-spot-card .name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+.top-spot-card .meta {
+  font-size: 13px;
+  color: var(--ink-dim);
+  margin: 4px 0 0;
+}
+
+.top-spot-card .price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.wall-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  overflow-x: auto;
+}
+
+.wall {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 760px;
+}
+
+.wall-row {
+  display: flex;
+  gap: 4px;
+}
+
+.wall-row.offset { margin-left: 30px; }
+
+.brick {
+  flex: 1;
+  height: 46px;
+  background: var(--bg-raised);
+  border: 1px dashed #2A2822;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #3A3730;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.brick:hover { border-color: var(--gold-dim); }
+
+.brick.confirmed {
+  background: var(--brick);
+  color: #1A1913;
+  border: 1px solid var(--brick-line);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  overflow: hidden;
+  padding: 0 4px;
+}
+
+.brick.reserved {
+  background: #2A2822;
+  border: 1px solid var(--gold-dim);
+  color: var(--gold-dim);
+}
+
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal-backdrop.open { display: flex; }
+
+.modal {
+  background: var(--bg-raised);
+  border: 1px solid #2A2822;
+  border-radius: 12px;
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--ink-dim);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.modal h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.modal p { color: var(--ink-dim); font-size: 14px; margin: 0 0 20px; }
+
+.modal .buy-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: #1A1913;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.modal .buy-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  color: var(--ink-dim);
+  font-size: 13px;
+}

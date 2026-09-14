@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — The Funded Wall</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .admin-wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px; }
+  .admin-wrap h1 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0 0 24px; }
+  .review-card {
+    background: var(--bg-raised); border: 1px solid #2A2822; border-radius: 10px;
+    padding: 20px; margin-bottom: 16px; display: flex; gap: 16px;
+  }
+  .review-card img { width: 140px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #2A2822; }
+  .review-info { flex: 1; }
+  .review-info p { margin: 2px 0; font-size: 13px; color: var(--ink-dim); }
+  .review-info .name { font-family: 'Space Grotesk', sans-serif; font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+  .review-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .review-actions button {
+    padding: 8px 16px; border-radius: 6px; border: none; font-family: 'Inter', sans-serif;
+    font-size: 13px; cursor: pointer; font-weight: 500;
+  }
+  .approve-btn { background: var(--gold); color: #1A1913; }
+  .reject-btn { background: #2A2822; color: var(--ink-dim); }
+  .empty { color: var(--ink-dim); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="admin-wrap">
+  <h1>pending review</h1>
+  <div id="list"><p class="empty">loading...</p></div>
+</div>
+
+<script>
+async function loadPending() {
+  const res = await fetch('/admin/api/pending');
+  const items = await res.json();
+  const list = document.getElementById('list');
+
+  if (items.length === 0) {
+    list.innerHTML = '<p class="empty">nothing pending review right now.</p>';
+    return;
+  }
+
+  list.innerHTML = items.map(item => `
+    <div class="review-card">
+      <img src="/uploads/${item.screenshotFile}" alt="proof">
+      <div class="review-info">
+        <p class="name">${item.alias} ${item.type === 'top' ? '(top spot)' : '#' + item.id}</p>
+        <p>${item.propFirm || '—'} · ${item.payoutRange || '—'}</p>
+        <p>${item.xLink || 'no X link'}</p>
+        <div class="review-actions">
+          <button class="approve-btn" onclick="act('approve', '${item.type}', '${item.id}')">approve</button>
+          <button class="reject-btn" onclick="act('reject', '${item.type}', '${item.id}')">reject</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function act(action, type, id) {
+  await fetch(`/admin/api/${action}/${type}/${id}`, { method: 'POST' });
+  loadPending();
+}
+
+loadPending();
+</script>
+</body>
+</html>
