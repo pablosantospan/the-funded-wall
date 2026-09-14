@@ -95,6 +95,7 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json();
     if (res.ok) {
       msg.textContent = 'submitted — pending review, you\'ll be on the wall soon.';
+      msg.innerHTML += ' <a href="/" style="color:var(--gold);">view the wall</a>';
       msg.className = 'msg ok';
       form.querySelectorAll('input, button').forEach(el => el.disabled = true);
     } else {
