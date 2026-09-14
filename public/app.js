@@ -16,7 +16,8 @@ function renderTopSpot(top, price) {
   const el = document.getElementById('top-spot');
   if (top.status === 'confirmed') {
     el.innerHTML = `
-      <div class="top-spot-card">
+            <div class="top-spot-card">
+        ${top.avatarUrl ? `<img class="top-spot-avatar" src="${top.avatarUrl}" alt="">` : ''}
         <div>
           <p class="label">top spot</p>
           <p class="name">${escapeHtml(top.alias)}</p>
@@ -54,8 +55,10 @@ function renderWall(slots) {
     for (const slot of slots.slice(i, i + COLS)) {
       const brick = document.createElement('div');
       brick.className = 'brick ' + slot.status;
-      if (slot.status === 'confirmed') {
-        brick.textContent = slot.alias;
+    if (slot.status === 'confirmed') {
+        brick.innerHTML = slot.avatarUrl
+          ? `<img class="brick-avatar" src="${slot.avatarUrl}" alt=""><span>${escapeHtml(slot.alias)}</span>`
+          : escapeHtml(slot.alias);
         brick.title = `${slot.alias} — ${slot.propFirm || ''} ${slot.payoutRange || ''}`;
         if (slot.xLink) {
           brick.addEventListener('click', () => window.open(slot.xLink, '_blank'));
