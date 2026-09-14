@@ -40,6 +40,7 @@ function loadData() {
       payoutRange: null,
       xLink: null,
       screenshotFile: null,
+      avatarFile: null,
       stripeSessionId: null,
       reservedAt: null,
       submittedAt: null
