@@ -46,6 +46,10 @@
     <label for="screenshot">payout or challenge screenshot</label>
     <input type="file" id="screenshot" name="screenshot" accept="image/png,image/jpeg,image/webp" required>
 
+    <label for="avatar">photo for your spot (optional)</label>
+    <input type="file" id="avatar" name="avatar" accept="image/png,image/jpeg,image/webp">
+    <p style="font-size:12px; color:var(--ink-dim); margin:4px 0 0;">shown small next to your alias on the wall. leave empty to show just your alias.</p>
+
     <button type="submit" class="submit-btn" id="submit-btn">confirm my spot</button>
     <p class="msg" id="msg"></p>
   </form>
@@ -89,6 +93,8 @@ form.addEventListener('submit', async (e) => {
   fd.append('payoutRange', document.getElementById('payoutRange').value);
   fd.append('xLink', document.getElementById('xLink').value);
   fd.append('screenshot', document.getElementById('screenshot').files[0]);
+  const avatarFile = document.getElementById('avatar').files[0];
+  if (avatarFile) fd.append('avatar', avatarFile);
 
   try {
     const res = await fetch('/api/claim', { method: 'POST', body: fd });
