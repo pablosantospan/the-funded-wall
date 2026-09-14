@@ -155,7 +155,24 @@ body {
   font-weight: 500;
   font-size: 11px;
   overflow: hidden;
-  padding: 0 4px;
+  padding: 0 6px;
+  gap: 5px;
+}
+
+.brick-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.top-spot-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .brick.reserved {
