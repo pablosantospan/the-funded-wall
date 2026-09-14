@@ -150,7 +150,8 @@ app.get('/api/wall', (req, res) => {
     alias: s.status === 'confirmed' ? s.alias : null,
     propFirm: s.status === 'confirmed' ? s.propFirm : null,
     payoutRange: s.status === 'confirmed' ? s.payoutRange : null,
-    xLink: s.status === 'confirmed' ? s.xLink : null
+    xLink: s.status === 'confirmed' ? s.xLink : null,
+    avatarUrl: s.status === 'confirmed' && s.avatarFile ? `/uploads/${s.avatarFile}` : null
   }));
 
   const publicTop = {
@@ -158,7 +159,8 @@ app.get('/api/wall', (req, res) => {
     alias: data.topSlot.status === 'confirmed' ? data.topSlot.alias : null,
     propFirm: data.topSlot.status === 'confirmed' ? data.topSlot.propFirm : null,
     payoutRange: data.topSlot.status === 'confirmed' ? data.topSlot.payoutRange : null,
-    xLink: data.topSlot.status === 'confirmed' ? data.topSlot.xLink : null
+    xLink: data.topSlot.status === 'confirmed' ? data.topSlot.xLink : null,
+    avatarUrl: data.topSlot.status === 'confirmed' && data.topSlot.avatarFile ? `/uploads/${data.topSlot.avatarFile}` : null
   };
 
   res.json({
@@ -246,7 +248,10 @@ const upload = multer({
   }
 });
 
-app.post('/api/claim', upload.single('screenshot'), (req, res) => {
+app.post('/api/claim', upload.fields([
+    { name: 'screenshot', maxCount: 1 },
+    { name: 'avatar', maxCount: 1 }
+  ]), (req, res) => {
   try {
     const { sessionId, propFirm, payoutRange, xLink } = req.body;
     const data = loadData();
@@ -259,12 +264,15 @@ app.post('/api/claim', upload.single('screenshot'), (req, res) => {
     }
 
     if (!target) return res.status(404).json({ error: 'Sesión no encontrada.' });
-    if (!req.file) return res.status(400).json({ error: 'Falta la captura.' });
+    const screenshotFile = req.files?.screenshot?.[0];
+    const avatarFile = req.files?.avatar?.[0];
+    if (!screenshotFile) return res.status(400).json({ error: 'Falta la captura.' });
 
     target.propFirm = (propFirm || '').slice(0, 60);
     target.payoutRange = (payoutRange || '').slice(0, 30);
     target.xLink = (xLink || '').slice(0, 200);
-    target.screenshotFile = req.file.filename;
+    target.screenshotFile = screenshotFile.filename;
+    target.avatarFile = avatarFile ? avatarFile.filename : null;
     target.submittedAt = new Date().toISOString();
     // Sigue en 'reserved' hasta que el admin lo apruebe manualmente.
 
